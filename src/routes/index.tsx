@@ -427,7 +427,8 @@ function QuizApp() {
           fontSize: isMobile ? 30 : 42, fontWeight: 800, color: M.white,
           letterSpacing: -0.6, margin: "0 0 28px", lineHeight: 1.2,
         }}>
-          Transforme pedidos soltos em <span style={{ color: M.teal }}>estimativas técnicas defensáveis</span>
+          Como está sua maturidade<br />
+          em <span style={{ color: M.teal }}>estimativas técnicas?</span>
         </h1>
 
         <div style={{
