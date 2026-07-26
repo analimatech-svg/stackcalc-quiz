@@ -33,21 +33,45 @@ const levelColor: Record<string, string> = {
   L4: M.teal,
 };
 
-function Glow() {
+const mono = "'SF Mono','JetBrains Mono','Fira Code',monospace";
+
+function Grid() {
   return (
     <div style={{ position: "fixed", inset: 0, overflow: "hidden", zIndex: 0, pointerEvents: "none" }}>
       <div style={{
-        position: "absolute", top: "-14%", left: "50%", transform: "translateX(-50%)",
-        width: 760, height: 760, borderRadius: "50%",
-        background: "radial-gradient(circle, rgba(46,196,182,0.16), transparent 70%)",
-        filter: "blur(70px)",
+        position: "absolute", inset: 0,
+        backgroundImage: `radial-gradient(rgba(255,255,255,0.07) 1px, transparent 1px)`,
+        backgroundSize: "26px 26px",
+        maskImage: "radial-gradient(ellipse 70% 55% at 50% 0%, black 30%, transparent 95%)",
+        WebkitMaskImage: "radial-gradient(ellipse 70% 55% at 50% 0%, black 30%, transparent 95%)",
       }} />
       <div style={{
-        position: "absolute", bottom: "-18%", right: "-12%",
-        width: 620, height: 620, borderRadius: "50%",
-        background: "radial-gradient(circle, rgba(255,255,255,0.05), transparent 70%)",
-        filter: "blur(90px)",
+        position: "absolute", top: 0, left: 0, right: 0, height: 1,
+        background: "linear-gradient(90deg, transparent, rgba(46,196,182,0.35), transparent)",
       }} />
+    </div>
+  );
+}
+
+function Logo() {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+      <div style={{
+        width: 24, height: 24, borderRadius: 6, background: M.teal,
+        display: "flex", alignItems: "center", justifyContent: "center",
+        fontFamily: mono, fontSize: 12, fontWeight: 800, color: M.bg,
+        flexShrink: 0,
+      }}>
+        {"{}"}
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.1 }}>
+        <span style={{ fontSize: 13, fontWeight: 800, letterSpacing: 1, textTransform: "uppercase" }}>
+          <span style={{ color: M.white }}>Stack</span><span style={{ color: M.teal }}>Calc</span>
+        </span>
+        <span style={{ fontSize: 9, color: M.sub, letterSpacing: 0.3, marginTop: 3 }}>
+          um produto MentoraTech
+        </span>
+      </div>
     </div>
   );
 }
@@ -112,8 +136,8 @@ const questions: Question[] = [
       { id: "d", score: 4, text: "Existe histórico completo das decisões tomadas" },
     ],
   },
-  { id: "q07", dim: "Prova no Post-mortem",
-    text: "Em um post-mortem, você consegue provar:",
+  { id: "q07", dim: "Prova na Análise de Causa Raiz",
+    text: "Em uma análise de causa raiz, você consegue provar:",
     options: [
       { id: "a", score: 1, text: "Quase nada" },
       { id: "b", score: 2, text: "Algumas decisões" },
@@ -215,8 +239,8 @@ const dimDiag: Record<string, Record<number, string>> = {
     3: "Os riscos já haviam sido registrados antes do atraso acontecer. Isso já reduz boa parte do desgaste na conversa.",
     4: "Existe histórico completo das decisões tomadas. Você entra na conversa de atraso com prova, não com memória.",
   },
-  "Prova no Post-mortem": {
-    1: "Você consegue provar quase nada. Sem escopo, premissas ou riscos registrados, o post-mortem vira debate de memória.",
+  "Prova na Análise de Causa Raiz": {
+    1: "Você consegue provar quase nada. Sem escopo, premissas ou riscos registrados, a análise de causa raiz vira debate de memória.",
     2: "Você consegue provar algumas decisões. Faltam ainda o escopo original e as mudanças que aconteceram no meio do caminho.",
     3: "Você consegue provar o escopo original. Falta conectar esse escopo às mudanças e riscos que vieram depois.",
     4: "Você consegue provar escopo, premissas, riscos e mudanças. Esse é o nível de defesa que encerra qualquer discussão de responsabilidade.",
@@ -312,7 +336,7 @@ function QuizApp() {
 
   function restart() { setStep(0); setAnswers({}); setPicked(null); setPhase("quiz"); }
 
-  const progressPct = Math.round((step / questions.length) * 100);
+  const progressPct = Math.round(((step + 1) / questions.length) * 100);
 
   if (phase === "intro") return (
     <div style={{
@@ -326,7 +350,7 @@ function QuizApp() {
       width: "100%",
       position: "relative",
     }}>
-      <Glow />
+      <Grid />
       <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", flex: 1, width: "100%" }}>
       <div style={{
         padding: `20px ${px}px`,
@@ -336,10 +360,7 @@ function QuizApp() {
         justifyContent: "space-between",
         ...glass,
       }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ fontSize: 13, fontWeight: 800, letterSpacing: 2, color: M.teal, textTransform: "uppercase" }}>Stack</span>
-          <span style={{ fontSize: 13, fontWeight: 800, letterSpacing: 2, color: M.white, textTransform: "uppercase" }}>Calc</span>
-        </div>
+        <Logo />
         <span style={{ fontSize: 12, color: M.sub, letterSpacing: 1, textTransform: "uppercase" }}>
           Diagnóstico de Maturidade
         </span>
@@ -359,14 +380,21 @@ function QuizApp() {
         boxSizing: "border-box",
       }}>
         <div style={{
-          fontSize: 11, fontWeight: 700, letterSpacing: 2,
-          color: M.teal, textTransform: "uppercase", marginBottom: 20,
-          border: `1px solid ${M.teal}`, borderRadius: 20, padding: "6px 16px",
-          background: "rgba(46,196,182,0.08)",
-          ...glass,
+          fontSize: 12, fontWeight: 500, letterSpacing: 0.2,
+          color: M.teal, marginBottom: 24,
+          border: `1px solid ${M.border}`, borderRadius: 6, padding: "8px 16px",
+          background: M.s1,
+          fontFamily: mono,
+          display: "inline-flex", alignItems: "center", gap: 10,
         }}>
-          Diagnóstico gratuito
+          <span style={{ color: M.sub }}>$</span>
+          <span>diagnostico --iniciar</span>
+          <span style={{
+            display: "inline-block", width: 7, height: 14, background: M.teal,
+            animation: "sc-caret 1s step-end infinite",
+          }} />
         </div>
+        <style>{`@keyframes sc-caret { 0%,100% { opacity: 1 } 50% { opacity: 0 } }`}</style>
         <h1 style={{
           fontSize: isMobile ? 30 : 40, fontWeight: 800, color: M.white,
           letterSpacing: -0.6, margin: "0 0 20px", lineHeight: 1.2,
@@ -416,17 +444,8 @@ function QuizApp() {
       width: "100%",
       position: "relative",
     }}>
-      <Glow />
+      <Grid />
       <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", flex: 1, width: "100%" }}>
-      <div style={{ height: 3, background: M.s2 }}>
-        <div style={{
-          height: "100%",
-          width: `${progressPct}%`,
-          background: M.teal,
-          transition: "width 0.35s ease",
-        }} />
-      </div>
-
       <div style={{
         padding: `20px ${px}px`,
         borderBottom: `1px solid ${M.border}`,
@@ -435,13 +454,26 @@ function QuizApp() {
         justifyContent: "space-between",
         ...glass,
       }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ fontSize: 13, fontWeight: 800, letterSpacing: 2, color: M.teal, textTransform: "uppercase" }}>Stack</span>
-          <span style={{ fontSize: 13, fontWeight: 800, letterSpacing: 2, color: M.white, textTransform: "uppercase" }}>Calc</span>
-        </div>
-        <span style={{ fontSize: 14, color: M.sub, fontWeight: 500 }}>
-          Pergunta <strong style={{ color: M.white }}>{step + 1}</strong> de {questions.length}
+        <Logo />
+        <span style={{ fontSize: 13, color: M.sub, fontFamily: mono }}>
+          <span style={{ color: M.white }}>{String(step + 1).padStart(2, "0")}</span>
+          <span style={{ opacity: 0.5 }}> / {String(questions.length).padStart(2, "0")}</span>
         </span>
+      </div>
+
+      <div style={{ padding: `14px ${px}px 0`, boxSizing: "border-box" }}>
+        <div style={{ display: "flex", gap: 4 }}>
+          {questions.map((_, i) => (
+            <div key={i} style={{
+              flex: 1, height: 4, borderRadius: 2,
+              background: i <= step ? M.teal : M.s2,
+              transition: "background 0.25s ease",
+            }} />
+          ))}
+        </div>
+        <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 6 }}>
+          <span style={{ fontSize: 11, color: M.sub, fontFamily: mono }}>{progressPct}%</span>
+        </div>
       </div>
 
       <div style={{
@@ -504,7 +536,6 @@ function QuizApp() {
                   boxSizing: "border-box",
                   width: "100%",
                   boxShadow: isSel ? "0 8px 24px rgba(46,196,182,0.15)" : "none",
-                  ...glass,
                 }}
                 onMouseEnter={e => {
                   if (!picked) {
@@ -549,20 +580,7 @@ function QuizApp() {
         )}
       </div>
 
-      <div style={{
-        padding: `20px ${px}px`,
-        display: "flex", justifyContent: "center", gap: 6,
-      }}>
-        {questions.map((_, i) => (
-          <div key={i} style={{
-            width: i === step ? 20 : 6,
-            height: 6, borderRadius: 3,
-            background: i < step ? M.teal : i === step ? M.teal : M.border,
-            opacity: i < step ? 0.6 : 1,
-            transition: "all 0.2s",
-          }} />
-        ))}
-      </div>
+      <div style={{ padding: `8px ${px}px 20px` }} />
       </div>
     </div>
   );
@@ -579,7 +597,7 @@ function QuizApp() {
       width: "100%",
       position: "relative",
     }}>
-      <Glow />
+      <Grid />
       <div style={{ position: "relative", zIndex: 1, width: "100%" }}>
       <div style={{
         padding: `20px ${px}px`,
@@ -589,10 +607,7 @@ function QuizApp() {
         justifyContent: "space-between",
         ...glass,
       }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ fontSize: 13, fontWeight: 800, letterSpacing: 2, color: M.teal, textTransform: "uppercase" }}>Stack</span>
-          <span style={{ fontSize: 13, fontWeight: 800, letterSpacing: 2, color: M.white, textTransform: "uppercase" }}>Calc</span>
-        </div>
+        <Logo />
         <span style={{ fontSize: 12, color: M.sub, letterSpacing: 1, textTransform: "uppercase" }}>
           Seu Resultado
         </span>
@@ -631,6 +646,37 @@ function QuizApp() {
           </p>
         </div>
 
+        <div style={{ marginBottom: 48 }}>
+          <div style={{ position: "relative", height: 6, background: M.s2, borderRadius: 3, marginBottom: 10 }}>
+            <div style={{ position: "absolute", inset: 0, display: "flex" }}>
+              {[0, 1, 2, 3].map(i => (
+                <div key={i} style={{ flex: 1, borderRight: i < 3 ? `1px solid ${M.bg}` : "none" }} />
+              ))}
+            </div>
+            <div style={{
+              position: "absolute", top: 0, left: 0, height: "100%",
+              width: `${(total / 36) * 100}%`, background: accent, borderRadius: 3,
+              transition: "width 0.6s ease",
+            }} />
+            <div style={{
+              position: "absolute", top: "50%", left: `${(total / 36) * 100}%`,
+              transform: "translate(-50%, -50%)", width: 14, height: 14, borderRadius: "50%",
+              background: M.bg, border: `2px solid ${accent}`,
+            }} />
+          </div>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            {["Nível 1", "Nível 2", "Nível 3", "Nível 4"].map((l, i) => (
+              <span key={i} style={{
+                fontSize: 10, fontFamily: mono,
+                color: level === `L${i + 1}` ? M.white : M.sub,
+                fontWeight: level === `L${i + 1}` ? 700 : 400,
+              }}>
+                {l}
+              </span>
+            ))}
+          </div>
+        </div>
+
         <div style={{
           display: "grid",
           gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(3, 1fr)",
@@ -648,8 +694,6 @@ function QuizApp() {
               borderRadius: 12,
               padding: isMobile ? "16px 14px" : "22px 20px",
               gridColumn: isMobile && i === 2 ? "1 / -1" : undefined,
-              boxShadow: "0 8px 24px rgba(0,0,0,0.28)",
-              ...glass,
             }}>
               <div style={{
                 fontSize: 10, fontWeight: 600, letterSpacing: 1.2,
@@ -672,7 +716,6 @@ function QuizApp() {
         </div>
 
         <div style={{
-          ...glass,
           background: M.s1,
           border: `1px solid ${M.border}`,
           borderLeft: `4px solid ${M.rose}`,
@@ -698,6 +741,33 @@ function QuizApp() {
           </p>
         </div>
 
+        <Label text="Virada de entendimento" />
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+          gap: 12, marginBottom: 16,
+        }}>
+          <div style={{ background: M.s1, border: `1px solid ${M.border}`, borderRadius: 12, padding: "20px 22px" }}>
+            <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1.5, color: M.sub, textTransform: "uppercase", marginBottom: 10 }}>
+              Crença antiga
+            </div>
+            <p style={{ fontSize: 14, color: M.sub, lineHeight: 1.7, margin: 0, fontStyle: "italic" }}>
+              "Se eu souber estimar bem, meu número já me protege."
+            </p>
+          </div>
+          <div style={{ background: M.s1, border: `1px solid ${M.teal}`, borderRadius: 12, padding: "20px 22px" }}>
+            <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1.5, color: M.teal, textTransform: "uppercase", marginBottom: 10 }}>
+              Crença nova
+            </div>
+            <p style={{ fontSize: 14, color: M.text, lineHeight: 1.7, margin: 0 }}>
+              "O número nunca foi o que te protege. O que te protege é conseguir mostrar, depois, quais premissas, riscos e decisões sustentaram aquele número."
+            </p>
+          </div>
+        </div>
+        <p style={{ fontSize: 14, color: M.sub, lineHeight: 1.75, marginBottom: 52, maxWidth: 560 }}>
+          Não é falta de conhecimento técnico. É falta de registro.
+        </p>
+
         <Label text="Análise por dimensão" />
         <div style={{
           background: M.s1,
@@ -705,8 +775,6 @@ function QuizApp() {
           borderRadius: 14,
           padding: "8px 0",
           marginBottom: 52,
-          boxShadow: "0 8px 24px rgba(0,0,0,0.28)",
-          ...glass,
         }}>
           {questions.map((qq, i) => {
             const s = answers[qq.id] || 1;
@@ -776,8 +844,6 @@ function QuizApp() {
                 border: `1px solid ${isPrimary ? M.teal : M.border}`,
                 borderRadius: 12,
                 padding: "22px 22px",
-                boxShadow: "0 8px 24px rgba(0,0,0,0.28)",
-                ...glass,
               }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
                   <span style={{
@@ -898,7 +964,7 @@ function QuizApp() {
             "Você assume riscos que deveriam estar documentados",
             "Escopo muda sem rastreabilidade",
             "Decisões desaparecem depois da reunião",
-            "Post-mortems viram debates de memória",
+            "Análises de causa raiz viram debates de memória",
             "Sua capacidade técnica fica invisível",
           ].map((item, i, arr) => (
             <div key={i} style={{
@@ -949,6 +1015,32 @@ function QuizApp() {
           A conversa deixa de ser sobre opinião. Passa a ser sobre decisão.
         </p>
 
+        <Label text="Pra quem é isso" />
+        <div style={{
+          border: `1px solid ${M.border}`,
+          borderRadius: 8,
+          overflow: "hidden",
+          marginBottom: 52,
+        }}>
+          {[
+            "Pra quem estima prazo em reunião e sente que está sozinho segurando o risco",
+            "Pra quem já foi cobrado por um atraso que não foi decisão sua",
+            "Pra quem entrega trabalho técnico sólido mas não sabe defender isso depois",
+            "Pra quem está cansado de escrever a mesma estimativa do zero toda vez",
+            "Pra quem lidera decisões técnicas e precisa que isso fique registrado, não na memória",
+          ].map((item, i, arr) => (
+            <div key={i} style={{
+              display: "flex", alignItems: "flex-start", gap: 14,
+              padding: "16px 22px",
+              background: i % 2 === 0 ? M.s1 : M.bg,
+              borderBottom: i < arr.length - 1 ? `1px solid ${M.border}` : "none",
+            }}>
+              <span style={{ color: M.teal, fontWeight: 700, fontSize: 13, marginTop: 2, fontFamily: mono }}>▸</span>
+              <span style={{ fontSize: 14, color: M.text, lineHeight: 1.6 }}>{item}</span>
+            </div>
+          ))}
+        </div>
+
         <div style={{
           textAlign: "center",
           padding: "52px 24px",
@@ -956,7 +1048,6 @@ function QuizApp() {
           border: `1px solid ${M.borderStrong}`,
           borderRadius: 20,
           boxShadow: "0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(46,196,182,0.06)",
-          ...glass,
         }}>
           <div style={{
             fontSize: 11, fontWeight: 700, letterSpacing: 2,
