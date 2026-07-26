@@ -1,24 +1,26 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
+import type { ReactNode } from "react";
 
 export const Route = createFileRoute("/")({
   component: QuizApp,
 });
 
-// ─── PALETA MENTORATECH (dark premium / glass) ────────────────────────────────
+// ─── PALETA MENTORATECH (dark premium, alto contraste) ────────────────────────
 const M = {
   bg:           "#07080c",
   s1:           "rgba(255,255,255,0.035)",
   s2:           "rgba(255,255,255,0.07)",
-  border:       "rgba(255,255,255,0.10)",
-  borderStrong: "rgba(255,255,255,0.20)",
+  border:       "rgba(255,255,255,0.12)",
+  borderStrong: "rgba(255,255,255,0.22)",
   teal:         "#2ec4b6",
   tealDim:      "#4f9b93",
-  rose:         "#c1584f",
+  red:          "#ef4444",
+  yellow:       "#facc15",
   white:        "#ffffff",
-  text:         "#e6e8f0",
-  sub:          "#8890a8",
-  muted:        "#565c72",
+  text:         "#f1f2f7",
+  sub:          "#aab2c8",
+  muted:        "#5a6178",
 };
 
 const glass = {
@@ -27,11 +29,17 @@ const glass = {
 } as const;
 
 const levelColor: Record<string, string> = {
-  L1: M.muted,
-  L2: M.sub,
-  L3: M.tealDim,
+  L1: M.red,
+  L2: M.yellow,
+  L3: M.yellow,
   L4: M.teal,
 };
+
+function scoreColor(s: number): string {
+  if (s <= 1) return M.red;
+  if (s <= 3) return M.yellow;
+  return M.teal;
+}
 
 const mono = "'SF Mono','JetBrains Mono','Fira Code',monospace";
 
@@ -51,6 +59,34 @@ function Grid() {
       }} />
     </div>
   );
+}
+
+function IconCircle({ children }: { children: ReactNode }) {
+  return (
+    <div style={{
+      width: 44, height: 44, borderRadius: "50%",
+      border: `1px solid ${M.teal}`, color: M.teal,
+      display: "flex", alignItems: "center", justifyContent: "center",
+      flexShrink: 0,
+    }}>
+      {children}
+    </div>
+  );
+}
+
+const iconProps = { width: 20, height: 20, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
+
+function IconClock() {
+  return <svg {...iconProps}><circle cx="12" cy="12" r="9" /><path d="M12 7.5V12l3 2" /></svg>;
+}
+function IconTarget() {
+  return <svg {...iconProps}><circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="4" /><circle cx="12" cy="12" r="0.6" fill="currentColor" /></svg>;
+}
+function IconShield() {
+  return <svg {...iconProps}><path d="M12 3.5l6.5 2.7v5.3c0 4.2-2.8 7.4-6.5 8.5-3.7-1.1-6.5-4.3-6.5-8.5V6.2L12 3.5z" /></svg>;
+}
+function IconCheck() {
+  return <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5" /></svg>;
 }
 
 function Logo() {
@@ -373,40 +409,64 @@ function QuizApp() {
         justifyContent: "center",
         alignItems: "center",
         textAlign: "center",
-        maxWidth: 640,
+        maxWidth: 680,
         margin: "0 auto",
-        padding: isMobile ? "48px 20px" : "72px 32px",
+        padding: isMobile ? "40px 20px" : "64px 32px",
         width: "100%",
         boxSizing: "border-box",
       }}>
         <div style={{
-          fontSize: 12, fontWeight: 500, letterSpacing: 0.2,
-          color: M.teal, marginBottom: 24,
-          border: `1px solid ${M.border}`, borderRadius: 6, padding: "8px 16px",
-          background: M.s1,
-          fontFamily: mono,
-          display: "inline-flex", alignItems: "center", gap: 10,
+          fontSize: 12, fontWeight: 700, letterSpacing: 1.5,
+          color: M.teal, marginBottom: 28,
+          border: `1px solid ${M.teal}`, borderRadius: 999, padding: "10px 22px",
+          textTransform: "uppercase",
         }}>
-          <span style={{ color: M.sub }}>$</span>
-          <span>diagnostico --iniciar</span>
-          <span style={{
-            display: "inline-block", width: 7, height: 14, background: M.teal,
-            animation: "sc-caret 1s step-end infinite",
-          }} />
+          Diagnóstico rápido · 2 minutos
         </div>
-        <style>{`@keyframes sc-caret { 0%,100% { opacity: 1 } 50% { opacity: 0 } }`}</style>
         <h1 style={{
-          fontSize: isMobile ? 30 : 40, fontWeight: 800, color: M.white,
-          letterSpacing: -0.6, margin: "0 0 20px", lineHeight: 1.2,
+          fontSize: isMobile ? 30 : 42, fontWeight: 800, color: M.white,
+          letterSpacing: -0.6, margin: "0 0 28px", lineHeight: 1.2,
         }}>
-          Transforme pedidos soltos em estimativas técnicas defensáveis
+          Transforme pedidos soltos em <span style={{ color: M.teal }}>estimativas técnicas defensáveis</span>
         </h1>
-        <p style={{
-          fontSize: 16, color: M.sub, lineHeight: 1.75,
-          margin: "0 0 40px", maxWidth: 520,
+
+        <div style={{
+          display: "flex", alignItems: "flex-start", gap: 16, textAlign: "left",
+          border: `1px solid ${M.border}`, borderRadius: 14,
+          padding: isMobile ? "20px 20px" : "22px 28px",
+          marginBottom: 28, maxWidth: 600,
         }}>
-          Descubra sua capacidade atual de defender prazos, registrar premissas e evitar que mudanças de escopo se transformem em cobranças futuras. Em menos de 2 minutos você recebe um diagnóstico completo sobre sua maturidade em estimativas técnicas.
-        </p>
+          <div style={{
+            width: 26, height: 26, borderRadius: "50%", background: M.teal, color: M.bg,
+            display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2,
+          }}>
+            <IconCheck />
+          </div>
+          <p style={{ fontSize: 15.5, color: M.text, lineHeight: 1.7, margin: 0 }}>
+            Responda 9 perguntas rápidas e descubra onde você está hoje na prática de estimativas técnicas, e{" "}
+            <strong style={{ color: M.white }}>o que isso pode estar te custando em prazo e credibilidade.</strong>
+          </p>
+        </div>
+
+        <div style={{
+          display: "flex", justifyContent: "center", gap: isMobile ? 20 : 40,
+          marginBottom: 36, flexWrap: "wrap",
+        }}>
+          {[
+            { icon: <IconClock />, label: "Leva menos", sub: "de 2 minutos" },
+            { icon: <IconTarget />, label: "Diagnóstico claro", sub: "e direto" },
+            { icon: <IconShield />, label: "100% confidencial", sub: "sem cadastro" },
+          ].map((t, i) => (
+            <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, textAlign: "left" }}>
+              <IconCircle>{t.icon}</IconCircle>
+              <div>
+                <div style={{ fontSize: 13.5, color: M.text, fontWeight: 600, lineHeight: 1.3 }}>{t.label}</div>
+                <div style={{ fontSize: 13.5, color: M.sub, lineHeight: 1.3 }}>{t.sub}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+
         <button
           onClick={() => setPhase("quiz")}
           style={{
@@ -415,18 +475,15 @@ function QuizApp() {
             color: M.bg,
             fontWeight: 800,
             fontSize: 16,
-            padding: "16px 48px",
-            borderRadius: 8,
+            padding: "18px 56px",
+            borderRadius: 10,
             cursor: "pointer",
             letterSpacing: 0.3,
-            boxShadow: "0 8px 28px rgba(46,196,182,0.25)",
+            boxShadow: "0 8px 32px rgba(46,196,182,0.3)",
           }}
         >
           Começar Diagnóstico
         </button>
-        <p style={{ fontSize: 12, color: M.sub, marginTop: 20 }}>
-          9 perguntas. Nenhum cadastro necessário.
-        </p>
       </div>
       </div>
     </div>
@@ -647,10 +704,10 @@ function QuizApp() {
         </div>
 
         <div style={{ marginBottom: 48 }}>
-          <div style={{ position: "relative", height: 6, background: M.s2, borderRadius: 3, marginBottom: 10 }}>
+          <div style={{ position: "relative", height: 6, borderRadius: 3, marginBottom: 10, overflow: "hidden" }}>
             <div style={{ position: "absolute", inset: 0, display: "flex" }}>
-              {[0, 1, 2, 3].map(i => (
-                <div key={i} style={{ flex: 1, borderRight: i < 3 ? `1px solid ${M.bg}` : "none" }} />
+              {[M.red, M.yellow, M.yellow, M.teal].map((c, i) => (
+                <div key={i} style={{ flex: 1, background: `${c}26`, borderRight: i < 3 ? `1px solid ${M.bg}` : "none" }} />
               ))}
             </div>
             <div style={{
@@ -689,8 +746,8 @@ function QuizApp() {
           ].map((k, i) => (
             <div key={i} style={{
               background: M.s1,
-              border: `1px solid ${k.highlight ? M.rose : M.border}`,
-              borderTop: `3px solid ${k.highlight ? M.rose : accent}`,
+              border: `1px solid ${k.highlight ? M.red : M.border}`,
+              borderTop: `3px solid ${k.highlight ? M.red : accent}`,
               borderRadius: 12,
               padding: isMobile ? "16px 14px" : "22px 20px",
               gridColumn: isMobile && i === 2 ? "1 / -1" : undefined,
@@ -703,7 +760,7 @@ function QuizApp() {
               </div>
               <div style={{
                 fontSize: isMobile ? 18 : 22, fontWeight: 700,
-                color: k.highlight ? M.rose : M.white,
+                color: k.highlight ? M.red : M.white,
                 lineHeight: 1.1, marginBottom: 5,
               }}>
                 {k.value}
@@ -718,7 +775,7 @@ function QuizApp() {
         <div style={{
           background: M.s1,
           border: `1px solid ${M.border}`,
-          borderLeft: `4px solid ${M.rose}`,
+          borderLeft: `4px solid ${M.red}`,
           borderRadius: 14,
           padding: isMobile ? "24px 22px" : "28px 32px",
           marginBottom: 52,
@@ -726,7 +783,7 @@ function QuizApp() {
         }}>
           <div style={{
             fontSize: 11, fontWeight: 700, letterSpacing: 2,
-            color: M.rose, textTransform: "uppercase", marginBottom: 14,
+            color: M.red, textTransform: "uppercase", marginBottom: 14,
           }}>
             Seu principal gargalo
           </div>
@@ -779,8 +836,8 @@ function QuizApp() {
           {questions.map((qq, i) => {
             const s = answers[qq.id] || 1;
             const isWeak = qq.dim === weakDim;
-            const barColor = isWeak ? M.rose : s >= 3 ? accent : M.sub;
-            const diagColor = s <= 1 ? M.rose : s === 2 ? M.sub : s === 3 ? accent : M.teal;
+            const barColor = scoreColor(s);
+            const diagColor = scoreColor(s);
             const diag = dimDiag[qq.dim]?.[s];
             return (
               <div key={qq.id} style={{
@@ -791,7 +848,7 @@ function QuizApp() {
                 <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
                   <span style={{
                     fontSize: 14,
-                    color: isWeak ? M.rose : M.text,
+                    color: isWeak ? M.white : M.text,
                     fontWeight: isWeak ? 600 : 400,
                     minWidth: isMobile ? 120 : 180,
                     flexShrink: 0,
@@ -809,21 +866,20 @@ function QuizApp() {
                   </div>
                   <span style={{
                     fontSize: 13,
-                    color: isWeak ? M.rose : M.sub,
+                    color: barColor,
                     fontWeight: 700,
                     minWidth: 28,
                     textAlign: "right",
-                    fontFamily: "'SF Mono','Fira Code',monospace",
+                    fontFamily: mono,
                   }}>
                     {s}/4
                   </span>
                 </div>
                 {diag && (
                   <p style={{
-                    margin: 0, fontSize: 12, lineHeight: 1.55,
-                    color: diagColor,
+                    margin: 0, fontSize: 12.5, lineHeight: 1.6,
+                    color: M.sub,
                     paddingLeft: isMobile ? 0 : 2,
-                    opacity: 0.9,
                   }}>
                     {diag}
                   </p>
@@ -953,7 +1009,7 @@ function QuizApp() {
           })}
         </div>
 
-        <Label text="O que isso está custando hoje" color={M.rose} />
+        <Label text="O que isso está custando hoje" color={M.red} />
         <div style={{
           border: `1px solid ${M.border}`,
           borderRadius: 8,
@@ -973,7 +1029,7 @@ function QuizApp() {
               background: M.s1,
               borderBottom: i < arr.length - 1 ? `1px solid ${M.border}` : "none",
             }}>
-              <span style={{ color: M.rose, fontWeight: 700, fontSize: 14, marginTop: 1 }}>×</span>
+              <span style={{ color: M.red, fontWeight: 700, fontSize: 14, marginTop: 1 }}>×</span>
               <span style={{ fontSize: 14, color: M.text, lineHeight: 1.6 }}>{item}</span>
             </div>
           ))}
